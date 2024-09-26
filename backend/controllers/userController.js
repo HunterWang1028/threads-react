@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateTokenAndSetCookie.js";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 
 export const getUserProfile = async (req, res) => {
   // fetch user profile either with username or userId
@@ -60,6 +61,8 @@ export const signupUser = async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         username: newUser.username,
+        bio: newUser.bio,
+        profilePic: newUser.profilePic,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -89,6 +92,8 @@ export const loginUser = async (req, res) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      bio: user.bio,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -144,7 +149,8 @@ export const followUnfollowUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { name, email, username, password, profilePic, bio } = req.body;
+  const { name, email, username, password, bio } = req.body;
+  let { profilePic } = req.body;
   const userId = req.user._id;
   try {
     let currentUser = await User.findById(userId);
@@ -161,6 +167,16 @@ export const updateUser = async (req, res) => {
       currentUser.password = hashedPassword;
     }
 
+    if (profilePic) {
+      if (currentUser.profilePic) {
+        await cloudinary.uploader.destroy(
+          currentUser.profilePic.split("/".pop().split(".")[0])
+        );
+      }
+      const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+      profilePic = uploadedResponse.secure_url;
+    }
+
     currentUser.name = name || currentUser.name;
     currentUser.email = email || currentUser.email;
     currentUser.username = username || currentUser.username;
@@ -168,9 +184,11 @@ export const updateUser = async (req, res) => {
     currentUser.bio = bio || currentUser.bio;
 
     currentUser = await currentUser.save();
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", currentUser });
+
+    // for not passing the password
+    currentUser.password = null;
+
+    res.status(200).json({ currentUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log("Error in updateUser: ", error.message);
