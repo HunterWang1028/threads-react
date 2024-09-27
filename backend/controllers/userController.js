@@ -153,8 +153,8 @@ export const updateUser = async (req, res) => {
   let { profilePic } = req.body;
   const userId = req.user._id;
   try {
-    let currentUser = await User.findById(userId);
-    if (!currentUser) res.status(400).json({ error: "User not found" });
+    let user = await User.findById(userId);
+    if (!user) res.status(400).json({ error: "User not found" });
 
     if (req.params.id !== userId.toString())
       return res
@@ -164,31 +164,31 @@ export const updateUser = async (req, res) => {
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-      currentUser.password = hashedPassword;
+      user.password = hashedPassword;
     }
 
     if (profilePic) {
-      if (currentUser.profilePic) {
+      if (user.profilePic) {
         await cloudinary.uploader.destroy(
-          currentUser.profilePic.split("/".pop().split(".")[0])
+          user.profilePic.split("/".pop().split(".")[0])
         );
       }
       const uploadedResponse = await cloudinary.uploader.upload(profilePic);
       profilePic = uploadedResponse.secure_url;
     }
 
-    currentUser.name = name || currentUser.name;
-    currentUser.email = email || currentUser.email;
-    currentUser.username = username || currentUser.username;
-    currentUser.profilePic = profilePic || currentUser.profilePic;
-    currentUser.bio = bio || currentUser.bio;
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.username = username || user.username;
+    user.profilePic = profilePic || user.profilePic;
+    user.bio = bio || user.bio;
 
-    currentUser = await currentUser.save();
+    user = await user.save();
 
     // for not passing the password
-    currentUser.password = null;
+    user.password = null;
 
-    res.status(200).json({ currentUser });
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log("Error in updateUser: ", error.message);
