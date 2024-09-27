@@ -1,5 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
   Button,
   CloseButton,
   Flex,
@@ -18,7 +19,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import usePreviewImg from "../hooks/usePreviewImg";
@@ -102,25 +102,39 @@ const CreateThread = () => {
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent bgColor={useColorModeValue("gray.200", "gray.dark")}>
           <ModalHeader>Create Thread</ModalHeader>
-          <ModalCloseButton _hover={"none"} />
           <ModalBody pb={6}>
             <FormControl>
-              <Textarea
-                placeholder="Anything new?"
-                _placeholder={{ color: "gray.400" }}
-                border={"none"}
-                _focusVisible={"none"}
-                onChange={handleTextChange}
-                value={threadText}
-              />
+              <Flex>
+                <Avatar src={currentUser.profilePic} size={"md"} right={2} />
+                <Flex flex={1} flexDirection={"column"} gap={2} ml={2}>
+                  <Flex w={"full"} alignItems={"center"}>
+                    <Text fontSize={"sm"} fontWeight={"bold"}>
+                      {currentUser.name}
+                    </Text>
+
+                    <Image src="/verified.png" w={4} h={4} ml={1} />
+                  </Flex>
+                  <Textarea
+                    placeholder="What's new?"
+                    _placeholder={{
+                      color: useColorModeValue("gray.800", "gray.400"),
+                    }}
+                    border={"none"}
+                    _focusVisible={"none"}
+                    onChange={handleTextChange}
+                    value={threadText}
+                    fontSize={"md"}
+                    padding={0}
+                  />
+                </Flex>
+              </Flex>
               <Text
                 fontSize={"xs"}
-                fontWeight={"bold"}
                 textAlign={"right"}
                 m={1}
-                color={"gray.800"}
+                color={useColorModeValue("gray.600", "gray.400")}
               >
                 {remainingChar}/{MAX_CHAR}
               </Text>
@@ -156,7 +170,7 @@ const CreateThread = () => {
           <ModalFooter>
             <Button
               colorScheme="none"
-              color="white"
+              color={useColorModeValue("gray.800", "gray.400")}
               _hover={"none"}
               border={"1px"}
               mr={3}
