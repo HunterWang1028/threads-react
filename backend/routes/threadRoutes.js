@@ -17,7 +17,7 @@ router.get("/:id", getThreadById);
 router.get("/user/:username", getUserThreads);
 
 router.post("/create", protectRoute, createThread);
-router.post("/like/:id", protectRoute, likeUnlikeThread);
+router.put("/like/:id", protectRoute, likeUnlikeThread);
 router.post("/comment/:id", protectRoute, commentToThread);
 
 router.delete("/:id", protectRoute, deleteThread);

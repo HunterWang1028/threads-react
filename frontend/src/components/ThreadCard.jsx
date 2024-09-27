@@ -1,8 +1,7 @@
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
-import { BsThreeDots } from "react-icons/bs";
+// import { BsThreeDots } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import PostActions from "./PostActions";
-import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 // import {
 //   Modal,
@@ -15,7 +14,6 @@ import { formatDistanceToNow } from "date-fns";
 // } from "@chakra-ui/react";
 
 const ThreadCard = ({ thread, author }) => {
-  const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   //   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -110,7 +108,7 @@ const ThreadCard = ({ thread, author }) => {
           )}
 
           <Flex gap={3} my={1}>
-            <PostActions liked={liked} setLiked={setLiked} thread={thread} />
+            <PostActions thread={thread} />
           </Flex>
         </Flex>
       </Flex>
