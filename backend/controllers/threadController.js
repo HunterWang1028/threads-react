@@ -1,5 +1,6 @@
 import Thread from "../models/threadModel.js";
 import User from "../models/userModel.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const createThread = async (req, res) => {
   try {
@@ -22,6 +23,11 @@ export const createThread = async (req, res) => {
       return res
         .status(400)
         .json({ message: `Text must be less than ${maxLength} characters` });
+    }
+
+    if (img) {
+      const uploadedResponse = await cloudinary.uploader.upload(img);
+      img = uploadedResponse.secure_url;
     }
 
     const newThread = new Thread({ author, text, img });
@@ -217,20 +223,21 @@ export const getFeedThreads = async (req, res) => {
     const following = user.following;
 
     const feedThreads = await Thread.find({ author: { $in: following } })
+      .find({ parentId: { $in: [null, undefined] } })
       .sort({
         createdAt: -1,
       })
       .populate({
         path: "author",
         model: "User",
-        select: "_id name username img",
+        select: "_id name username profilePic",
       })
       .populate({
         path: "children",
         populate: {
           path: "author",
           model: "User",
-          select: "_id name parentId username image",
+          select: "_id name parentId username profilePic",
         },
       });
 

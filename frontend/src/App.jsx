@@ -8,6 +8,8 @@ import AuthPage from "./pages/AuthPage";
 import userAtom from "./atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
+import CreateThread from "./components/CreateThread";
+import LogoutButton from "./components/LogoutButton.jsx";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -28,8 +30,11 @@ function App() {
           element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />}
         />
         <Route path="/:username" element={<UserPage />} />
-        <Route path="/:username/post/:pid" element={<Postpage />} />
+        <Route path="/:username/thread/:id" element={<Postpage />} />
       </Routes>
+
+      {user && <CreateThread />}
+      {user && <LogoutButton />}
     </Container>
   );
 }

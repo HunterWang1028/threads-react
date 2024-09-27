@@ -1,6 +1,13 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  Flex,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import UserHeader from "../components/UserHeader";
-import UserPost from "../components/UserPost";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
@@ -9,6 +16,7 @@ const UserPage = () => {
   const [user, setUser] = useState(null);
   const { username } = useParams();
   const showToast = useShowToast();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getUser = async () => {
@@ -24,13 +32,25 @@ const UserPage = () => {
         setUser(data);
       } catch (error) {
         showToast("Error", error, "error");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getUser();
   }, [username, showToast]);
 
-  if (!user) return null;
+  if (!user && isLoading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner size={"xl"} />
+      </Flex>
+    );
+  }
+
+  if (!user && !isLoading) {
+    return <h1>User not found</h1>;
+  }
 
   return (
     <>
@@ -46,9 +66,7 @@ const UserPage = () => {
         </TabList>
 
         <TabPanels>
-          <TabPanel>
-            <UserPost />
-          </TabPanel>
+          <TabPanel></TabPanel>
           <TabPanel>
             <p>123456</p>
           </TabPanel>

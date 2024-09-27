@@ -6,38 +6,39 @@ import {
   MenuItem,
   MenuList,
   Portal,
-  useToast,
+  Text,
 } from "@chakra-ui/react";
+import useShowToast from "../hooks/useShowToast";
 
-const PostActions = ({ liked, setLiked }) => {
-  const toast = useToast();
+const PostActions = ({ liked, setLiked, thread }) => {
+  const showToast = useShowToast();
   const copyUrl = () => {
     const currentUrl = window.location.href; // TODO: change to post url
     navigator.clipboard.writeText(currentUrl).then(() => {
-      toast({
-        title: "Success.",
-        status: "success",
-        description: "Profile link copied.",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Success", "Profile link copied", "success");
     });
   };
   return (
     <Flex flexDirection="column">
-      <Flex gap={1} my={2} onClick={(e) => e.preventDefault()}>
+      <Flex gap={2} my={2} onClick={(e) => e.preventDefault()}>
         <Image
           src={liked ? "/public/heart-filled.svg" : "/public/heart-gray.svg"}
           alt="like"
-          w={5}
-          h={5}
+          w={6}
+          h={6}
           onClick={() => setLiked(!liked)}
         />
+        <Text color={"gray.light"} fontSize="sm">
+          {thread?.likes.length}
+        </Text>
 
-        <Image src="/public/reply.svg" alt="comment" w={5} h={5} />
+        <Image src="/public/reply.svg" alt="comment" w={6} h={6} />
+        <Text color={"gray.light"} fontSize="sm">
+          {thread?.children.length}
+        </Text>
         <Menu>
           <MenuButton>
-            <Image src="/public/share.svg" alt="share" w={5} h={5} />
+            <Image src="/public/share.svg" alt="share" w={6} h={6} />
           </MenuButton>
           <Portal>
             <MenuList bg={"gray.dark"}>

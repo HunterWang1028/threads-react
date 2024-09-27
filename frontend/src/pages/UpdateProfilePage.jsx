@@ -10,11 +10,11 @@ import {
   Avatar,
   Center,
   Textarea,
+  CloseButton,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
-import { MdOutlineCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
@@ -25,6 +25,7 @@ export default function UpdateProfilePage() {
   const [inputs, setInputs] = useState({
     name: user.name,
     bio: user.bio,
+    username: user.username,
   });
 
   const showToast = useShowToast();
@@ -56,7 +57,7 @@ export default function UpdateProfilePage() {
       showToast("Error", error, "error");
     } finally {
       setIsLoading(false);
-      navigate(-1);
+      navigate(`/${user._id}`);
     }
   };
 
@@ -77,11 +78,7 @@ export default function UpdateProfilePage() {
               Edit Profile
             </Heading>
 
-            <MdOutlineCancel
-              cursor={"pointer"}
-              size={20}
-              onClick={() => navigate(-1)}
-            />
+            <CloseButton _hover={"none"} onClick={() => navigate(-1)} />
           </Flex>
           <FormControl id="userName">
             <Stack direction={["column", "row"]} spacing={6}>
@@ -109,6 +106,18 @@ export default function UpdateProfilePage() {
               type="text"
               value={inputs.name}
               onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              placeholder="Username"
+              _placeholder={{ color: "gray.500" }}
+              type="text"
+              value={inputs.username}
+              onChange={(e) =>
+                setInputs({ ...inputs, username: e.target.value })
+              }
             />
           </FormControl>
           <FormControl>

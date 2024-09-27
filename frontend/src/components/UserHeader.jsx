@@ -80,7 +80,9 @@ const UserHeader = ({ user }) => {
             {user.name}
           </Text>
           <Flex gap={2} alignItems={"center"}>
-            <Text fontSize={"sm"}>{user.username}</Text>
+            <Text fontSize={"sm"} color={"gray.500"}>
+              @{user.username}
+            </Text>
           </Flex>
         </Box>
         <Box>

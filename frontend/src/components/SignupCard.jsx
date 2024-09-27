@@ -34,8 +34,10 @@ export default function SignupCard() {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSingup = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch("/api/users/signup", {
         method: "POST",
@@ -54,6 +56,8 @@ export default function SignupCard() {
       setUser(data);
     } catch (error) {
       showToast("Error", error, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -132,7 +136,6 @@ export default function SignupCard() {
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
-                loadingText="Submitting"
                 size="lg"
                 bg={useColorModeValue("gray.600", "gray.700")}
                 color={"white"}
@@ -140,6 +143,7 @@ export default function SignupCard() {
                   bg: useColorModeValue("gray.700", "gray.800"),
                 }}
                 onClick={handleSingup}
+                isLoading={isLoading}
               >
                 Sign up
               </Button>
