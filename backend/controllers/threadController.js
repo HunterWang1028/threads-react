@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Thread from "../models/threadModel.js";
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
@@ -39,9 +40,7 @@ export const createThread = async (req, res) => {
       $push: { threads: newThread._id },
     });
 
-    res
-      .status(201)
-      .json({ message: "Post created successfully", newPost: newThread });
+    res.status(201).json(newThread);
   } catch (error) {
     res.status(500).json({ message: error.message });
     console.log(error.message);
@@ -49,12 +48,15 @@ export const createThread = async (req, res) => {
 };
 
 export const getThreadById = async (req, res) => {
+  const { threadId } = req.params;
   try {
-    const thread = await Thread.findById(req.params.id)
+    const thread = await Thread.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    })
       .populate({
         path: "author", // Populate the author field with _id and username
         model: "User",
-        select: "_id name username img",
+        select: "_id name username profilePic",
       })
       .populate({
         path: "children", // Populate the children field
@@ -62,7 +64,7 @@ export const getThreadById = async (req, res) => {
           {
             path: "author", // Populate the author field within children
             model: "User",
-            select: "_id name parentId img",
+            select: "_id name username parentId profilePic",
           },
           {
             path: "children", // Populate the children field within children
@@ -70,7 +72,7 @@ export const getThreadById = async (req, res) => {
             populate: {
               path: "author", // Populate the author field within nested children
               model: "User",
-              select: "_id name parentId img",
+              select: "_id name username parentId profilePic",
             },
           },
         ],
@@ -112,7 +114,7 @@ export const deleteThread = async (req, res) => {
 
     if (mainThread.img) {
       const imgId = mainThread.img.split("/").pop().split(".")[0];
-      //   await cloudinary.uploader.destroy(imgId);
+      await cloudinary.uploader.destroy(imgId);
     }
 
     // Fetch all child threads and their descendants recursively
@@ -256,20 +258,21 @@ export const getUserThreads = async (req, res) => {
     }
 
     const threads = await Thread.find({ author: user._id })
+      .find({ parentId: { $in: [null, undefined] } })
       .sort({
         createdAt: -1,
       })
       .populate({
         path: "author",
         model: "User",
-        select: "_id name username img",
+        select: "_id name username profilePic threads",
       })
       .populate({
         path: "children",
         populate: {
           path: "author",
           model: "User",
-          select: "_id name parentId username image",
+          select: "_id name parentId username profilePic threads",
         },
       });
 

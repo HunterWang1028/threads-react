@@ -21,5 +21,4 @@ router.put("/like/:id", protectRoute, likeUnlikeThread);
 router.post("/comment/:id", protectRoute, commentToThread);
 
 router.delete("/:id", protectRoute, deleteThread);
-
 export default router;

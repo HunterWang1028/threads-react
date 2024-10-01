@@ -9,6 +9,7 @@ import {
   MenuList,
   Portal,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
@@ -18,13 +19,14 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { AiOutlineLink } from "react-icons/ai";
 
 const UserHeader = ({ user }) => {
   const showToast = useShowToast();
 
   const currentUser = useRecoilValue(userAtom); // the logged in user
   const [following, setFollowing] = useState(
-    user.followers.includes(currentUser._id)
+    user.followers.includes(currentUser?._id)
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +63,7 @@ const UserHeader = ({ user }) => {
       if (following) {
         user.followers.pop();
       } else {
-        user.followers.push(currentUser._id);
+        user.followers.push(currentUser?._id);
       }
 
       setFollowing(!following);
@@ -108,12 +110,12 @@ const UserHeader = ({ user }) => {
         </Box>
       </Flex>
       <Text>{user.bio}</Text>
-      {currentUser._id === user._id && (
+      {currentUser?._id === user._id && (
         <Link to="/update">
           <Button size={"sm"}>Update Profile</Button>
         </Link>
       )}
-      {currentUser._id !== user._id && (
+      {currentUser?._id !== user._id && (
         <Button size={"sm"} onClick={handleFollow} isLoading={isLoading}>
           {following ? "Unfollow" : "Follow"}
         </Button>
@@ -132,9 +134,21 @@ const UserHeader = ({ user }) => {
                 <CgMoreO size={24} cursor={"pointer"} />
               </MenuButton>
               <Portal>
-                <MenuList bg={"gray.dark"}>
-                  <MenuItem bg={"gray.dark"} onClick={copyUrl}>
+                <MenuList
+                  bgColor={useColorModeValue("gray.100", "#101010")}
+                  zIndex={50}
+                >
+                  <MenuItem
+                    bgColor={useColorModeValue("gray.100", "#101010")}
+                    onClick={copyUrl}
+                    _hover={{
+                      bg: useColorModeValue("gray.400", "gray.600"),
+                    }}
+                    justifyContent={"space-between"}
+                    zIndex={50}
+                  >
                     Copy Link
+                    <AiOutlineLink />
                   </MenuItem>
                 </MenuList>
               </Portal>

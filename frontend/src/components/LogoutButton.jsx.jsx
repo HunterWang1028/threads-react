@@ -3,10 +3,12 @@ import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 import { Image } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const LogoutButton = () => {
   const setUser = useSetRecoilState(userAtom);
   const showToast = useShowToast();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -25,6 +27,7 @@ const LogoutButton = () => {
 
       localStorage.removeItem("user-threads");
       setUser(null);
+      navigate("/");
     } catch (error) {
       showToast("Error", error, "error");
     }
@@ -38,6 +41,7 @@ const LogoutButton = () => {
       onClick={handleLogout}
       variant="ghost"
       _hover={"none"}
+      _hidden={"sm"}
     >
       <Image src="/public/logout.svg" />
     </Button>

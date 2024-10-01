@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
-
+import { RiMessengerLine } from "react-icons/ri";
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const currentUser = useRecoilValue(userAtom);
@@ -23,10 +23,15 @@ const Header = () => {
         onClick={toggleColorMode}
       />
       {currentUser && (
-        <Link to={`/${currentUser.username}`}>
-          <RxAvatar size={28} />
-          {/* <Avatar src={currentUser.profilePic} size={"sm"} /> */}
-        </Link>
+        <Flex alignItems={"center"} gap={4}>
+          <Link to={`/${currentUser.username}`}>
+            <RxAvatar size={28} />
+            {/* <Avatar src={currentUser.profilePic} size={"sm"} /> */}
+          </Link>
+          <Link to={`/chat`}>
+            <RiMessengerLine size={28} />
+          </Link>
+        </Flex>
       )}
     </Flex>
   );

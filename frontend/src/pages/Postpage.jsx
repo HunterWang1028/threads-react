@@ -1,52 +1,67 @@
-import { Avatar, Box, Divider, Flex, Image, Text } from "@chakra-ui/react";
-import { BsThreeDots } from "react-icons/bs";
-// import PostActions from "../components/PostActions";
+import { Divider, Flex, Spinner, Text } from "@chakra-ui/react";
+import postsAtom from "../atoms/postsAtom";
+import { useRecoilState } from "recoil";
+import useShowToast from "../hooks/useShowToast.js";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import useGetUserProfile from "../hooks/useGetUserProfile.js";
+
+import ThreadCard from "../components/ThreadCard.jsx";
 
 const Postpage = () => {
+  const { user, isLoading } = useGetUserProfile();
+  const [threads, setThreads] = useRecoilState(postsAtom);
+  const showToast = useShowToast();
+  const { tid } = useParams();
+
+  const currentThread = threads[0];
+
+  useEffect(() => {
+    const getThread = async () => {
+      setThreads([]);
+      try {
+        const res = await fetch(`/api/threads/${tid}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+
+        setThreads([data]);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    };
+    getThread();
+  }, [showToast, tid, setThreads]);
+
+  if (!user && isLoading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner />
+      </Flex>
+    );
+  }
+
+  if (!currentThread) return null;
+
   return (
     <>
-      <Flex>
-        <Flex w={"full"} alignItems={"center"} gap={3}>
-          <Avatar src="" size={"md"} name="poset.username" />
-          <Flex>
-            <Text fontSize={"sm"} fontWeight={"bold"}>
-              post.username
-            </Text>
-            <Image src="/verified.png" w={4} h={4} ml={1} />
-          </Flex>
-        </Flex>
-        <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"sm"} color={"gray.light"}>
-            TODO:time
-          </Text>
-          <BsThreeDots />
-        </Flex>
-      </Flex>
-
-      <Text my={3}>currentPost.text</Text>
-
-      <Box
-        borderRadius={6}
-        overflow={"hidden"}
-        border={"1px solid"}
-        borderColor={"gray.light"}
-      >
-        <Image src={""} w={"full"} />
-      </Box>
-
-      <Flex gap={3} my={3}>
-        {/* <PostActions post={currentPost} /> */}
-      </Flex>
-
+      <ThreadCard thread={currentThread} author={currentThread.author} />
+      <Text my={4}>Comments</Text>
       <Divider my={4} />
 
-      {/* {currentPost.replies.map((reply) => (
-				<Comment
-					key={reply._id}
-					reply={reply}
-					lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
-				/>
-			))} */}
+      {currentThread.children.map((children) => (
+        <ThreadCard
+          key={children._id}
+          thread={children}
+          author={children.author}
+          lastReply={
+            children._id ===
+            currentThread.children[currentThread.children.length - 1]._id
+          }
+        />
+      ))}
     </>
   );
 };

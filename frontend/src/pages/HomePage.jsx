@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { Flex, Spinner } from "@chakra-ui/react";
 import ThreadCard from "../components/ThreadCard";
+import { useRecoilState } from "recoil";
+import postsAtom from "../atoms/postsAtom";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const showToast = useShowToast();
-  const [threads, setThreads] = useState([]);
+  const [threads, setThreads] = useRecoilState(postsAtom);
 
   useEffect(() => {
     const getFeedThreads = async () => {
       setIsLoading(true);
+      setThreads([]);
       try {
         const res = await fetch(`/api/threads/feed`);
         const data = await res.json();
@@ -28,7 +31,7 @@ const HomePage = () => {
     };
 
     getFeedThreads();
-  }, [showToast]);
+  }, [showToast, setThreads]);
 
   return (
     <>

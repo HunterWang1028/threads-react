@@ -36,7 +36,7 @@ const PostActions = ({ thread: currentThread }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const copyUrl = () => {
-    const currentUrl = window.location.href; // TODO: change to post url
+    const currentUrl = window.location.href + `/thread/${currentThread._id}`;
     navigator.clipboard.writeText(currentUrl).then(() => {
       showToast("Success", "Profile link copied", "success");
     });
@@ -105,7 +105,7 @@ const PostActions = ({ thread: currentThread }) => {
     if (isReplying) return;
     setIsReplying(true);
     try {
-      const res = await fetch("/api/posts/reply/" + currentThread._id, {
+      const res = await fetch("/api/threads/comment/" + currentThread._id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,6 +114,10 @@ const PostActions = ({ thread: currentThread }) => {
       });
       const data = await res.json();
       if (data.error) return showToast("Error", data.error, "error");
+
+      setThread({ ...thread, children: [...thread.children, data.reply] });
+      onClose();
+      setReply("");
     } catch (error) {
       showToast("Error", error.message, "error");
     } finally {
@@ -130,6 +134,7 @@ const PostActions = ({ thread: currentThread }) => {
           w={6}
           h={6}
           onClick={handleLike}
+          cursor={"pointer"}
         />
         <Text color={"gray.light"} fontSize="sm">
           {thread?.likes.length}
@@ -141,6 +146,7 @@ const PostActions = ({ thread: currentThread }) => {
           w={6}
           h={6}
           onClick={onOpen}
+          cursor={"pointer"}
         />
         <Text color={"gray.light"} fontSize="sm">
           {thread?.children.length}

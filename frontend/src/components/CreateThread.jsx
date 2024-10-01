@@ -23,9 +23,11 @@ import {
 import { useRef, useState } from "react";
 import usePreviewImg from "../hooks/usePreviewImg";
 import { BsFillImageFill } from "react-icons/bs";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
+import postsAtom from "../atoms/postsAtom";
+import { useParams } from "react-router-dom";
 
 const MAX_CHAR = 500;
 
@@ -39,6 +41,8 @@ const CreateThread = () => {
   const [threadText, setThreadText] = useState("");
   const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
   const [isLoading, setIsLoading] = useState(false);
+  const [threads, setThreads] = useRecoilState(postsAtom);
+  const { username } = useParams();
 
   const handleTextChange = (e) => {
     const inputText = e.target.value;
@@ -79,6 +83,9 @@ const CreateThread = () => {
         return;
       }
       showToast("Success", "Thread created successfully", "success");
+      if (username === currentUser.username) {
+        setThreads([data, ...threads]);
+      }
       onClose();
       setThreadText("");
       setImgUrl("");
@@ -94,9 +101,10 @@ const CreateThread = () => {
         position={"fixed"}
         bottom={10}
         right={10}
-        size={"lg"}
+        size={{ base: "md", md: "lg" }}
         bg={useColorModeValue("gray.300", "gray.dark")}
         onClick={onOpen}
+        _hidden={"/chat"}
       >
         <AddIcon />
       </Button>
@@ -119,7 +127,7 @@ const CreateThread = () => {
                   <Textarea
                     placeholder="What's new?"
                     _placeholder={{
-                      color: useColorModeValue("gray.800", "gray.400"),
+                      color: useColorModeValue("gray.800", "gray.500"),
                     }}
                     border={"none"}
                     _focusVisible={"none"}
