@@ -92,8 +92,10 @@ const fetchAllChildThreads = async (id) => {
   const childThreads = await Thread.find({ parentId: id });
 
   const descendantThreads = [];
+  // forEach does not natively support asynchronous functions, could have race conditions
   for (const childThread of childThreads) {
     const descendants = await fetchAllChildThreads(childThread._id);
+
     descendantThreads.push(childThread, ...descendants);
   }
 
