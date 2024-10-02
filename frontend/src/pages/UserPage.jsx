@@ -48,8 +48,6 @@ const UserPage = () => {
     getThreads();
   }, [username, showToast, setThreads, user]);
 
-  console.log(threads);
-
   if (!user && isLoading) {
     return (
       <Flex justifyContent={"center"}>

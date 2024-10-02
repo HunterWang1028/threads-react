@@ -125,10 +125,20 @@ const UserHeader = ({ user }) => {
           <Text color={"gray.light"}>{user.followers.length} followers</Text>
         </Flex>
         <Flex>
-          <Box className="icon-container">
+          <Box
+            className="icon-container"
+            _hover={{
+              bg: useColorModeValue("gray.300", "gray.900"),
+            }}
+          >
             <BsInstagram size={24} cursor={"pointer"} />
           </Box>
-          <Box className="icon-container">
+          <Box
+            className="icon-container"
+            _hover={{
+              bg: useColorModeValue("gray.300", "gray.900"),
+            }}
+          >
             <Menu>
               <MenuButton>
                 <CgMoreO size={24} cursor={"pointer"} />

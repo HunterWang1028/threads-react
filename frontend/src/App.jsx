@@ -9,7 +9,6 @@ import userAtom from "./atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import CreateThread from "./components/CreateThread";
-import LogoutButton from "./components/LogoutButton.jsx";
 import Chatpage from "./pages/Chatpage.jsx";
 
 function App() {
@@ -19,7 +18,13 @@ function App() {
   return (
     <Box position={"relative"} w={"full"}>
       <Container
-        maxW={pathname === "/" ? { base: "620px", md: "900px" } : "620px"}
+        maxW={
+          pathname === "/"
+            ? { base: "620px", md: "900px" }
+            : pathname === "/chat"
+            ? "95%"
+            : "620px"
+        }
       >
         <Header />
         <Routes>
@@ -43,7 +48,6 @@ function App() {
           />
         </Routes>
         {user && location.pathname !== "/chat" && <CreateThread />}
-        {user && <LogoutButton />}
       </Container>
     </Box>
   );

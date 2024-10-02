@@ -19,7 +19,9 @@ export const getUserProfile = async (req, res) => {
         .select("-updatedAt");
     } else {
       // query is username
-      user = await User.findOne({ username: query })
+      user = await User.findOne({
+        $or: [{ username: query }, { name: query }],
+      })
         .select("-password")
         .select("-updatedAt");
     }

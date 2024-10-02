@@ -1,6 +1,5 @@
 import Conversation from "../models/ConversationModel.js";
 import Message from "../models/messageModel.js";
-import { getRecipientSocketId, io } from "../socket/socket.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const sendMessage = async (req, res) => {
@@ -24,16 +23,16 @@ export const sendMessage = async (req, res) => {
       await conversation.save();
     }
 
-    if (img) {
-      const uploadedResponse = await cloudinary.uploader.upload(img);
-      img = uploadedResponse.secure_url;
-    }
+    // if (img) {
+    //   const uploadedResponse = await cloudinary.uploader.upload(img);
+    //   img = uploadedResponse.secure_url;
+    // }
 
     const newMessage = new Message({
       conversationId: conversation._id,
       sender: senderId,
       text: message,
-      img: img || "",
+      // img: img || "",
     });
 
     await Promise.all([
@@ -54,7 +53,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-export const getMessage = async (req, res) => {
+export const getMessages = async (req, res) => {
   const userId = req.user._id;
   const { otherUserId } = req.params;
   try {
@@ -65,11 +64,11 @@ export const getMessage = async (req, res) => {
     if (!conversation)
       return res.status(400).json({ error: "Conversation not found" });
 
-    const message = await Message.find({
+    const messages = await Message.find({
       conversationId: conversation._id,
     }).sort({ createdAt: 1 });
 
-    res.status(200).json(message);
+    res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -82,7 +81,7 @@ export const getConversations = async (req, res) => {
       participants: userId,
     }).populate({
       path: "participants",
-      select: "username profilePic",
+      select: "username profilePic name",
     });
 
     // remove the current user from the participants array

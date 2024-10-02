@@ -1,24 +1,37 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import { useRecoilValue } from "recoil";
+import { selectedConversationAtom } from "../atoms/messagesAtom";
+// import userAtom from "../atoms/userAtom";
 
-const Message = ({ ownMessage }) => {
+const Message = ({ ownMessage, message }) => {
+  const selectedConversation = useRecoilValue(selectedConversationAtom);
+  // const user = useRecoilValue(userAtom);
   return (
     <>
       {ownMessage ? (
-        <Flex gap={2} alignSelf={"end"}>
-          <Text maxW={"350px"} bg={"blue.400"} p={1} borderRadius={"md"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus,
-            architecto. Error dolorem illum impedit laboriosam labore nulla,
-            tempore praesentium corporis.
+        <Flex gap={2} alignSelf={"flex-end"}>
+          <Text
+            maxW={"350px"}
+            // eslint-disable-next-line
+            bg={useColorModeValue("blue.200", "blue.400")}
+            py={2}
+            px={3}
+            borderRadius={"md"}
+            alignContent={"center"}
+            fontSize={{ base: "sm", md: "md", lg: "lg" }}
+          >
+            {message.text}
           </Text>
-          <Avatar src="" w={7} h={7} />
+          {/* <Avatar src={user.profilePic} /> */}
         </Flex>
       ) : (
-        <Flex gap={2}>
-          <Avatar src="" w={7} h={7} />
-          <Text maxW={"350px"} bg={"gray.600"} p={1} borderRadius={"md"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus,
-            architecto. Error dolorem illum impedit laboriosam labore nulla,
-            tempore praesentium corporis.
+        <Flex>
+          <Avatar
+            src={selectedConversation.userProfilePic}
+            size={{ base: "sm", md: "md", lg: "lg" }}
+          />
+          <Text maxW={"350px"} bg={"gray.600"} borderRadius={"md"}>
+            {message.text}
           </Text>
         </Flex>
       )}

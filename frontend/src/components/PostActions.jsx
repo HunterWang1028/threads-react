@@ -129,7 +129,7 @@ const PostActions = ({ thread: currentThread }) => {
     <Flex flexDirection="column">
       <Flex gap={2} my={2} onClick={(e) => e.preventDefault()}>
         <Image
-          src={liked ? "/public/heart-filled.svg" : "/public/heart-gray.svg"}
+          src={liked ? "/heart-filled.svg" : "/heart-gray.svg"}
           alt="like"
           w={6}
           h={6}
@@ -141,7 +141,7 @@ const PostActions = ({ thread: currentThread }) => {
         </Text>
 
         <Image
-          src="/public/reply.svg"
+          src="/reply.svg"
           alt="comment"
           w={6}
           h={6}
@@ -153,7 +153,7 @@ const PostActions = ({ thread: currentThread }) => {
         </Text>
         <Menu>
           <MenuButton>
-            <Image src="/public/share.svg" alt="share" w={6} h={6} />
+            <Image src="/share.svg" alt="share" w={6} h={6} />
           </MenuButton>
           <Portal>
             <MenuList bg={"gray.dark"}>
