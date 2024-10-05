@@ -80,6 +80,10 @@ const Conversation = ({ conversation, isOnline }) => {
             : lastMessage.text.length > 18
             ? lastMessage.text.slice(0, 30) + "..."
             : lastMessage.text}
+          {lastMessage &&
+            !lastMessage.text &&
+            currentUser._id !== lastMessage.sender &&
+            `${user.name} sends an Image`}
         </Text>
       </Stack>
     </Flex>
@@ -87,11 +91,3 @@ const Conversation = ({ conversation, isOnline }) => {
 };
 
 export default Conversation;
-
-// TODO: message sent from ourself show seen if seen, sent otherwise
-
-{
-  /* {lastMessage.text.length > 18
-? lastMessage.text.substring(0, 18) + "..."
-: lastMessage.text} */
-}

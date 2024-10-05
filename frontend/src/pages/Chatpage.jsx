@@ -56,7 +56,7 @@ const Chatpage = () => {
   }, [showToast, setConversations]);
 
   useEffect(() => {
-    socket.on("newMessage", (message) => {
+    socket?.on("newMessage", (message) => {
       if (selectedConversation._id === message.conversationId) {
         setMessages((prevMessages) => [...prevMessages, message]);
       }
@@ -84,7 +84,7 @@ const Chatpage = () => {
     });
 
     return () => {
-      socket.off("newMessage");
+      socket?.off("newMessage");
     };
   }, [socket, selectedConversation, setConversations, messages, setMessages]);
 
@@ -106,7 +106,7 @@ const Chatpage = () => {
         return updatedConversations;
       });
     });
-    return () => socket.off("messageSeen");
+    return () => socket?.off("messageSeen");
   }, [socket, setConversations]);
 
   const handleConversationSearch = async (e) => {

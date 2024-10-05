@@ -1,22 +1,42 @@
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Flex,
+  Image,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  Spinner,
+  useColorModeValue,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { useRef, useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import useShowToast from "../hooks/useShowToast";
+import usePreviewImg from "../hooks/usePreviewImg";
 import {
   conversationsAtom,
   selectedConversationAtom,
 } from "../atoms/messagesAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { BsFillImageFill } from "react-icons/bs";
+
 const MessageInput = ({ setMessages }) => {
   const [messageText, setMessageText] = useState("");
-  const showToast = useShowToast();
   const selectedConversation = useRecoilValue(selectedConversationAtom);
   const setConversations = useSetRecoilState(conversationsAtom);
+  const showToast = useShowToast();
+  const imageRef = useRef(null);
+  const { onClose } = useDisclosure();
+  const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
   const [isSending, setIsSending] = useState(false);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!messageText) return;
+    if (!messageText && !imgUrl) return;
     setIsSending(true);
     try {
       const res = await fetch("/api/messages", {
@@ -27,6 +47,7 @@ const MessageInput = ({ setMessages }) => {
         body: JSON.stringify({
           message: messageText,
           recipientId: selectedConversation.userId,
+          img: imgUrl,
         }),
       });
 
@@ -41,6 +62,7 @@ const MessageInput = ({ setMessages }) => {
             return {
               ...conversation,
               lastMessage: {
+                ...conversation.lastMessage,
                 text: messageText,
                 sender: data.sender,
               },
@@ -51,6 +73,7 @@ const MessageInput = ({ setMessages }) => {
         return updatedConversations;
       });
       setMessageText("");
+      setImgUrl("");
     } catch (error) {
       showToast("Error", error, "error");
     } finally {
@@ -58,19 +81,59 @@ const MessageInput = ({ setMessages }) => {
     }
   };
   return (
-    <form onSubmit={handleSendMessage}>
-      <InputGroup>
+    <Flex alignItems={"center"} gap={2} w={"full"}>
+      <Flex flex={5} cursor={"pointer"}>
+        <BsFillImageFill size={20} onClick={() => imageRef.current.click()} />
         <Input
-          w={"full"}
-          placeholder="Message..."
-          onChange={(e) => setMessageText(e.target.value)}
-          value={messageText}
+          type={"file"}
+          hidden
+          ref={imageRef}
+          onChange={handleImageChange}
         />
-        <InputRightElement>
-          <IoSendSharp onClick={handleSendMessage} cursor={"pointer"} />
-        </InputRightElement>
-      </InputGroup>
-    </form>
+      </Flex>
+      <form onSubmit={handleSendMessage} style={{ flex: 95 }}>
+        <InputGroup>
+          <Input
+            w={"full"}
+            placeholder="Message..."
+            onChange={(e) => setMessageText(e.target.value)}
+            value={messageText}
+          />
+          <InputRightElement>
+            <IoSendSharp onClick={handleSendMessage} cursor={"pointer"} />
+          </InputRightElement>
+        </InputGroup>
+      </form>
+
+      <Modal
+        isOpen={imgUrl}
+        onClose={() => {
+          onClose();
+          setImgUrl("");
+        }}
+      >
+        <ModalOverlay />
+        <ModalContent bgColor={useColorModeValue("gray.200", "gray.dark")}>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex mt={12} w={"full"}>
+              <Image src={imgUrl} />
+            </Flex>
+            <Flex justifyContent={"flex-end"} mt={5} mb={2}>
+              {!isSending ? (
+                <IoSendSharp
+                  size={24}
+                  cursor={"pointer"}
+                  onClick={handleSendMessage}
+                />
+              ) : (
+                <Spinner size={"md"} />
+              )}
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Flex>
   );
 };
 
