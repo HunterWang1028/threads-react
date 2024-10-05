@@ -12,22 +12,89 @@ import {
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import useShowToast from "../hooks/useShowToast";
-import { useRecoilValue } from "recoil";
-import { selectedConversationAtom } from "../atoms/messagesAtom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  conversationsAtom,
+  messagesAtom,
+  selectedConversationAtom,
+} from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
 import { useEffect, useRef, useState } from "react";
+import { useSocket } from "../context/SockertContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
   const selectedConversation = useRecoilValue(selectedConversationAtom);
   const [loadingMessages, setLoadingMessages] = useState(true);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useRecoilState(messagesAtom);
   const currentUser = useRecoilValue(userAtom);
-  const messageEndRef = useRef(null);
+  const { socket } = useSocket();
+  const setConversations = useSetRecoilState(conversationsAtom);
+  const messageContainerRef = useRef(null);
+  const isAtBottomRef = useRef(true);
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    socket.on("newMessage", (message) => {
+      if (selectedConversation._id === message.conversationId) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === message.conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                text: message.text,
+                sender: message.sender,
+              },
+              // Increment unseen count only if not from current user
+              // unseenCount:
+              //   conversation.unseenCount +
+              //   (message.sender !== currentUser._id ? 1 : 0),
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      });
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [socket, selectedConversation, setConversations, messages, setMessages]);
+
+  useEffect(() => {
+    const lastMessageIsFromOtherUser =
+      messages.length &&
+      messages[messages.length - 1].sender !== currentUser._id;
+    if (lastMessageIsFromOtherUser) {
+      socket.emit("markMessagesAsSeen", {
+        conversationId: selectedConversation._id,
+        userId: selectedConversation.userId,
+      });
+    }
+
+    socket.on("messagesSeen", ({ conversationId }) => {
+      if (selectedConversation._id === conversationId) {
+        setMessages((prev) => {
+          const updatedMessages = prev.map((message) => {
+            if (!message.seen) {
+              return {
+                ...message,
+                seen: true,
+              };
+            }
+            return message;
+          });
+          return updatedMessages;
+        });
+      }
+    });
+    return () => socket.off("messageSeen");
+  }, [socket, currentUser._id, messages, selectedConversation, setMessages]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -37,7 +104,6 @@ const MessageContainer = () => {
         const data = await res.json();
         if (data.error) return showToast("Error", data.error, "error");
         setMessages(data);
-        console.log(data);
       } catch (error) {
         showToast("Error", error.message, "error");
       } finally {
@@ -46,7 +112,28 @@ const MessageContainer = () => {
     };
 
     getMessages();
-  }, [showToast, selectedConversation.userId]);
+  }, [showToast, selectedConversation.userId, setMessages]);
+
+  // Set scroll position to the bottom when conversation is selected
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  }, [selectedConversation]);
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (isAtBottomRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+    isAtBottomRef.current = scrollTop + clientHeight >= scrollHeight - 50; // Adjust threshold as needed
+  };
 
   return (
     <Flex
@@ -71,9 +158,11 @@ const MessageContainer = () => {
 
       {/* Messages */}
       <Flex
+        ref={messageContainerRef}
         flexDirection={"column"}
         gap={4}
         my={4}
+        onScroll={handleScroll}
         height={"full"}
         overflowY={"auto"}
         sx={{
@@ -103,24 +192,22 @@ const MessageContainer = () => {
                 {i % 2 !== 0 && <SkeletonCircle size={7} />}
               </Flex>
             ))
-          : messages.map((message) => (
-              <Flex
+          : messages.map((message, index) => (
+              <Message
                 key={message._id}
-                direction={"column"}
-                ref={
-                  messages.length - 1 === messages.indexOf(message)
-                    ? messageEndRef
-                    : null
-                }
-              >
-                <Message
-                  message={message}
-                  ownMessage={currentUser._id === message.sender}
-                />
-              </Flex>
+                message={message}
+                ownMessage={currentUser._id === message.sender}
+                previousMessage={index > 0 ? messages[index - 1] : undefined}
+              />
             ))}
       </Flex>
-      <Box>
+      <Box
+        position="sticky"
+        bottom={0}
+        py={3}
+        bg={useColorModeValue("gray.100", "#101010")}
+        zIndex="1"
+      >
         <MessageInput setMessages={setMessages} />
       </Box>
     </Flex>

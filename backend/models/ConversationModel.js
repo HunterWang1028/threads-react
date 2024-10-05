@@ -18,6 +18,10 @@ const conversationSchema = new mongoose.Schema(
         type: Boolean,
         default: false,
       },
+      // unseenCount: {
+      //   type: Number,
+      //   default: 0,
+      // },
     },
   },
   { timestamps: true }

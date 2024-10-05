@@ -15,3 +15,8 @@ export const selectedConversationAtom = atom({
     name: "",
   },
 });
+
+export const messagesAtom = atom({
+  key: "messagesAtom",
+  default: [],
+});

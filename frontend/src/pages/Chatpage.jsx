@@ -19,9 +19,11 @@ import useShowToast from "../hooks/useShowToast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   conversationsAtom,
+  messagesAtom,
   selectedConversationAtom,
 } from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
+import { useSocket } from "../context/SockertContext";
 
 const Chatpage = () => {
   const [selectedConversation, setSelectedConversation] = useRecoilState(
@@ -29,11 +31,13 @@ const Chatpage = () => {
   );
   const [conversations, setConversations] = useRecoilState(conversationsAtom);
   const currentUser = useRecoilValue(userAtom);
+  const [messages, setMessages] = useRecoilState(messagesAtom);
 
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [searchingUser, setSearchingUser] = useState(false);
   const showToast = useShowToast();
+  const { socket, onlineUsers } = useSocket();
 
   useEffect(() => {
     const getConversations = async () => {
@@ -50,6 +54,60 @@ const Chatpage = () => {
     };
     getConversations();
   }, [showToast, setConversations]);
+
+  useEffect(() => {
+    socket.on("newMessage", (message) => {
+      if (selectedConversation._id === message.conversationId) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === message.conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                text: message.text,
+                sender: message.sender,
+              },
+              // Increment unseen count only if not from current user
+              // unseenCount:
+              //   conversation.unseenCount +
+              //   (message.sender !== currentUser._id ? 1 : 0),
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      });
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [socket, selectedConversation, setConversations, messages, setMessages]);
+
+  useEffect(() => {
+    socket?.on("messagesSeen", ({ conversationId }) => {
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                seen: true,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      });
+    });
+    return () => socket.off("messageSeen");
+  }, [socket, setConversations]);
 
   const handleConversationSearch = async (e) => {
     e.preventDefault();
@@ -175,6 +233,9 @@ const Chatpage = () => {
             : conversations.map((conversation) => (
                 <Conversation
                   key={conversation._id}
+                  isOnline={onlineUsers.includes(
+                    conversation.participants[0]._id
+                  )}
                   conversation={conversation}
                 />
               ))}

@@ -21,7 +21,7 @@ const HomePage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
+
         setThreads(data);
       } catch (error) {
         showToast("Error", error, "error");
