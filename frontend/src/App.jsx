@@ -14,7 +14,6 @@ import Chatpage from "./pages/Chatpage.jsx";
 function App() {
   const user = useRecoilValue(userAtom);
   const { pathname } = useLocation();
-  const location = useLocation();
   return (
     <Box position={"relative"} w={"full"}>
       <Container
@@ -47,7 +46,7 @@ function App() {
             element={user ? <Chatpage /> : <Navigate to="/auth" />}
           />
         </Routes>
-        {user && location.pathname !== "/chat" && <CreateThread />}
+        {user && pathname !== "/chat" && <CreateThread />}
       </Container>
     </Box>
   );
