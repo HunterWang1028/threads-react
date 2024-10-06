@@ -4,8 +4,8 @@ import { Box, Flex, Spinner } from "@chakra-ui/react";
 import ThreadCard from "../components/ThreadCard";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
-import SuggestedUsers from "../components/SuggestedUsers";
 import { SuggestedUserCarousel } from "../components/SuggestedUserCards";
+import SuggestedUsersPC from "../components/SuggestedUsersPC";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +77,7 @@ const HomePage = () => {
         ))}
       </Box>
       <Box flex={30} display={{ base: "none", md: "block" }}>
-        <SuggestedUsers />
+        <SuggestedUsersPC />
       </Box>
     </Flex>
   );

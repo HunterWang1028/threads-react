@@ -116,19 +116,19 @@ const MessageContainer = () => {
 
   // Set scroll position to the bottom when conversation is selected
   useEffect(() => {
-    if (messageContainerRef.current) {
+    if (messageContainerRef.current && !loadingMessages) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, loadingMessages]);
 
   // Scroll to bottom when new messages are added
   useEffect(() => {
-    if (isAtBottomRef.current) {
+    if (isAtBottomRef.current && !loadingMessages) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, loadingMessages]);
 
   const handleScroll = (e) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
@@ -144,7 +144,18 @@ const MessageContainer = () => {
       p={2}
     >
       {/* Message header */}
-      <Flex w={"full"} h={12} alignItems={"center"} gap={2} my={1} pb={2}>
+      <Flex
+        w={"full"}
+        h={12}
+        alignItems={"center"}
+        gap={2}
+        my={1}
+        py={5}
+        position={{ base: "sticky", md: "relative" }} // Sticky on small devices
+        top={0} // Stick to top
+        zIndex={2} // Ensure it's above the content
+        bg={useColorModeValue("gray.100", "#101010")}
+      >
         <Avatar
           src={selectedConversation.userProfilePic}
           size={{ base: "sm", md: "md", lg: "lg" }}

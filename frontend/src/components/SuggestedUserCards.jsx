@@ -58,7 +58,7 @@ export const SuggestedUserMobile = ({ user }) => {
       direction={"column"}
       alignItems={"center"}
       borderRadius={"lg"}
-      bg={useColorModeValue("gray.600", "gray.dark")}
+      bg={useColorModeValue("gray.200", "gray.dark")}
     >
       <Flex as={Link} to={`${user.username}`}>
         <Avatar src={user.profilePic} size={"sm"} />
@@ -118,9 +118,9 @@ export const SuggestedUserCarousel = ({ suggestedUsers }) => {
         aria-label="Scroll Left"
         borderRadius={50}
         size={"xs"}
-        // bg="transparent" // No background color
-        // _hover={{ bg: "transparent" }} // No hover background
-        // _focus={{ boxShadow: "none" }} // No focus outline
+        // bg="transparent"
+        // _hover={{ bg: "transparent" }}
+        // _focus={{ boxShadow: "none" }}
       />
 
       {/* Card Container */}
@@ -155,9 +155,9 @@ export const SuggestedUserCarousel = ({ suggestedUsers }) => {
         aria-label="Scroll Right"
         borderRadius={50}
         size={"xs"}
-        // bg="transparent" // No background color
-        // _hover={{ bg: "transparent" }} // No hover background
-        // _focus={{ boxShadow: "none" }} // No focus outline
+        // bg="transparent"
+        // _hover={{ bg: "transparent" }}
+        // _focus={{ boxShadow: "none" }}
       />
     </Box>
   );

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { SuggestedUserPC } from "./SuggestedUserCards";
 
-const SuggestedUsers = () => {
+const SuggestedUsersPC = () => {
   const [loading, setLoading] = useState(true);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const showToast = useShowToast();
@@ -65,4 +65,4 @@ const SuggestedUsers = () => {
   );
 };
 
-export default SuggestedUsers;
+export default SuggestedUsersPC;
