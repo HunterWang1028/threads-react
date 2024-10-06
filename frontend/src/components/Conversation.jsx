@@ -57,7 +57,7 @@ const Conversation = ({ conversation, isOnline }) => {
         <Avatar size={{ base: "sm", md: "md", lg: "lg" }} src={user.profilePic}>
           {isOnline && (
             <AvatarBadge
-              boxSize={{ base: "1rem", md: "1.5rem" }}
+              boxSize={{ base: ".8rem", md: "1.2rem" }}
               bg={"green.500"}
             />
           )}
