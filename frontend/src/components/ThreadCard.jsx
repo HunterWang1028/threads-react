@@ -56,7 +56,7 @@ const ThreadCard = ({ thread, author, lastThread }) => {
 
   return (
     <Link to={`/${author.username}/thread/${thread._id}`}>
-      <Flex gap={3} py={5}>
+      <Flex gap={3} py={5} mr={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           {/* TODO: can add a user info modal with follow button on the profile pic */}
           <Avatar

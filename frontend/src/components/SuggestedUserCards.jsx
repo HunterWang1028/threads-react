@@ -127,6 +127,7 @@ export const SuggestedUserCarousel = ({ suggestedUsers }) => {
       <Flex
         ref={scrollRef}
         overflowX="auto"
+        maxW={"90vw"}
         gap={4}
         p={2}
         alignItems="center"
