@@ -1,4 +1,4 @@
-# [Threads Clone]([https://vcard.myvcard.xyz/](https://threads-react.onrender.com/))
+# [Threads Clone](https://threads-react.onrender.com/)
 
  這是一個複製 Threads 並加入訊息功能的社群平台，主要功能如下：
 
