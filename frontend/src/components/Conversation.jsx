@@ -82,6 +82,7 @@ const Conversation = ({ conversation, isOnline }) => {
             : lastMessage.text}
           {lastMessage &&
             !lastMessage.text &&
+            lastMessage.sender &&
             currentUser._id !== lastMessage.sender &&
             `${user.name} sends an Image`}
         </Text>
