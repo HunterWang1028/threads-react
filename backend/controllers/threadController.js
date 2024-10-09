@@ -259,8 +259,10 @@ export const getUserThreads = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const threads = await Thread.find({ author: user._id })
-      .find({ parentId: { $in: [null, undefined] } })
+    const threads = await Thread.find({
+      author: user._id,
+      parentId: { $in: [null, undefined] },
+    })
       .sort({
         createdAt: -1,
       })
@@ -275,6 +277,40 @@ export const getUserThreads = async (req, res) => {
           path: "author",
           model: "User",
           select: "_id name parentId username profilePic threads",
+        },
+      });
+
+    res.status(200).json(threads);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserReplies = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const threads = await Thread.find({
+      author: user._id,
+      parentId: { $ne: null },
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "author",
+        model: "User",
+        select: "_id name username profilePic threads",
+      })
+      .populate({
+        path: "parentId",
+        model: "Thread",
+        populate: {
+          path: "author",
+          model: "User",
+          select: "_id name username profilePic",
         },
       });
 

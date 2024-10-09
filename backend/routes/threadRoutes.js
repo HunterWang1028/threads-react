@@ -5,6 +5,7 @@ import {
   deleteThread,
   getFeedThreads,
   getThreadById,
+  getUserReplies,
   getUserThreads,
   likeUnlikeThread,
 } from "../controllers/threadController.js";
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get("/feed", protectRoute, getFeedThreads);
 router.get("/:id", getThreadById);
 router.get("/user/:username", getUserThreads);
+router.get("/user/replies/:username", getUserReplies);
 
 router.post("/create", protectRoute, createThread);
 router.put("/like/:id", protectRoute, likeUnlikeThread);

@@ -16,12 +16,15 @@ import useGetUserProfile from "../hooks/useGetUserProfile";
 import ThreadCard from "../components/ThreadCard";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
+import repliesAtom from "../atoms/repliesAtom";
+import ReplyCard from "../components/ReplyCard";
 
 const UserPage = () => {
   const { user, isLoading } = useGetUserProfile();
   const { username } = useParams();
   const showToast = useShowToast();
   const [threads, setThreads] = useRecoilState(postsAtom);
+  const [replies, setReplies] = useRecoilState(repliesAtom);
   const [isFetchingThreads, setIsFetchingThreads] = useState(true);
 
   useEffect(() => {
@@ -47,6 +50,30 @@ const UserPage = () => {
 
     getThreads();
   }, [username, showToast, setThreads, user]);
+
+  useEffect(() => {
+    const getReplies = async () => {
+      if (!user) return;
+      setIsFetchingThreads(true);
+      try {
+        const res = await fetch(`/api/threads/user/replies/${username}`);
+        const data = await res.json();
+
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setReplies(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+        setReplies([]);
+      } finally {
+        setIsFetchingThreads(false);
+      }
+    };
+
+    getReplies();
+  }, [username, showToast, setReplies, user]);
 
   if (!user && isLoading) {
     return (
@@ -98,8 +125,23 @@ const UserPage = () => {
             ))}
           </TabPanel>
           <TabPanel>
-            {/* TODO: fetch all user comments and their parent threads <CommentCard/> */}
-            <p>123456</p>
+            {!isFetchingThreads && threads.length === 0 && (
+              <h1>{user.name} does&apos;t reply to anyone yet...</h1>
+            )}
+            {isFetchingThreads && (
+              <Flex justifyContent={"center"} my={12}>
+                <Spinner size={"xl"} />
+              </Flex>
+            )}
+            {replies.map((reply) => (
+              <ReplyCard
+                key={reply._id}
+                thread={reply}
+                author={reply.author}
+                parent={reply.parentId}
+                parentAuthor={reply.parentId.author}
+              />
+            ))}
           </TabPanel>
         </TabPanels>
       </Tabs>
