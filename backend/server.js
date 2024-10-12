@@ -10,6 +10,10 @@ import { v2 as cloudinary } from "cloudinary";
 import { app, server } from "./socket/socket.js";
 import job from "./cron/cron.js";
 
+import passport from "passport";
+import session from "express-session"; // Required for passport sessions
+import "./passportConfig.js"; // Import the Google OAuth configuration
+
 dotenv.config();
 
 connectToDB();
@@ -24,9 +28,20 @@ cloudinary.config({
   api_secret: process.env.CLOUDNARY_API_SECRET,
 });
 
+//Middlewares
 app.use(express.json({ limit: "50mb" })); // To parse JSON data in req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in req.body
 app.use(cookieParser());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session()); // For session handling with Google OAuth
 
 // Routes
 app.use("/api/users", userRoutes);
