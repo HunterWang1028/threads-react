@@ -19,7 +19,11 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       minLength: 6,
-      required: true,
+      // required: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
     },
     googleId: {
       type: String,
