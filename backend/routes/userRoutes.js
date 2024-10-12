@@ -1,8 +1,6 @@
 import express from "express";
-import passport from "passport";
 import {
   followUnfollowUser,
-  getGoogleUser,
   getSuggestedUsers,
   getUserProfile,
   loginUser,
@@ -11,7 +9,6 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 import protectRoute from "../middlewares/protectRoute.js";
-import generateTokenAndSetCookie from "../utils/generateTokenAndSetCookie.js";
 
 const router = express.Router();
 
