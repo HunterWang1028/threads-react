@@ -24,26 +24,4 @@ router.post("/logout", logoutUser);
 router.post("/follow/:id", protectRoute, followUnfollowUser);
 router.put("/update/:id", protectRoute, updateUser);
 
-// Google OAuth routes
-router.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    prompt: "select_account",
-  })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-  }),
-  (req, res) => {
-    // Generate JWT for Google authenticated user
-    generateTokenAndSetCookie(req.user._id, res);
-    res.redirect("https://threads-react.onrender.com/");
-  }
-);
-router.get("/googleProfile", protectRoute, getGoogleUser);
-
 export default router;

@@ -6,38 +6,14 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
 import userAtom from "./atoms/userAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import CreateThread from "./components/CreateThread";
 import Chatpage from "./pages/Chatpage.jsx";
-import { useEffect } from "react";
 
 function App() {
   const user = useRecoilValue(userAtom);
-  const setUser = useSetRecoilState(userAtom);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/users/googleProfile", {
-          method: "GET",
-          credentials: "include", // Ensure cookies (JWT) are sent with request
-        });
-        const data = await res.json();
-        if (!data.error) {
-          setUser(data); // Update userAtom with the authenticated user's details
-        }
-      } catch (error) {
-        console.log("Error fetching user:", error);
-      }
-    };
-
-    // Fetch user details if not already in Recoil state
-    if (!user) {
-      fetchUser();
-    }
-  }, [setUser, user]);
 
   return (
     <Box position={"relative"} w={"full"}>

@@ -56,10 +56,6 @@ export default function LoginCard() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.open("/api/users/auth/google", "_self"); // Redirect to your Google OAuth route
-  };
-
   return (
     <Flex align={"center"} justify={"center"}>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
@@ -129,24 +125,6 @@ export default function LoginCard() {
                 isLoading={isLoading}
               >
                 Login
-              </Button>
-            </Stack>
-
-            {/* Google Login Button */}
-            <Stack pt={4}>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={handleGoogleLogin}
-                leftIcon={
-                  <img
-                    src="https://developers.google.com/identity/images/g-logo.png"
-                    alt="Google Logo"
-                    width="20px"
-                  />
-                }
-              >
-                Sign in with Google
               </Button>
             </Stack>
 
