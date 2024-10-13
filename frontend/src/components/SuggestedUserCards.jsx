@@ -22,10 +22,10 @@ export const SuggestedUserPC = ({ user }) => {
         <Avatar src={user.profilePic} />
         <Box>
           <Text fontSize={"sm"} fontWeight={"bold"}>
-            {user.username}
+            {user.name}
           </Text>
           <Text color={"gray.light"} fontSize={"sm"}>
-            {user.name}
+            @{user.username}
           </Text>
         </Box>
       </Flex>
@@ -65,12 +65,12 @@ export const SuggestedUserMobile = ({ user }) => {
       </Flex>
 
       <Text fontSize={"sm"} fontWeight={"bold"} mt={2}>
-        {user.username.length > 12
-          ? user.username.slice(0, 12) + "..."
-          : user.username}
+        {user.name.length > 12 ? user.name.slice(0, 12) + "..." : user.name}
       </Text>
       <Text color={"gray.light"} fontSize={"sm"} mb={2}>
-        {user.name.length > 12 ? user.name.slice(0, 12) + "..." : user.name}
+        {user.username.length > 12
+          ? "@" + user.username.slice(0, 12) + "..."
+          : "@" + user.username}
       </Text>
 
       <Button
