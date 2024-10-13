@@ -138,11 +138,7 @@ export default function LoginCard() {
                 variant="outline"
                 onClick={handleGoogleLogin}
                 leftIcon={
-                  <img
-                    src="https://developers.google.com/identity/images/g-logo.png"
-                    alt="Google Logo"
-                    width="20px"
-                  />
+                  <img src="/google.png" alt="Google Logo" width="20px" />
                 }
               >
                 Sign in with Google
