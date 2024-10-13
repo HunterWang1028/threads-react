@@ -228,3 +228,11 @@ export const getSuggestedUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+export const getGoogleUser = async (req, res) => {
+  try {
+    const user = req.user; // The user is attached by the protectRoute middleware
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to fetch user profile." });
+  }
+};

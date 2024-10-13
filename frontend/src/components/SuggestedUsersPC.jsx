@@ -57,7 +57,7 @@ const SuggestedUsersPC = () => {
                 </Flex>
               </Flex>
             ))
-          : suggestedUsers.map((user) => (
+          : suggestedUsers?.map((user) => (
               <SuggestedUserPC key={user._id} user={user} />
             ))}
       </Flex>

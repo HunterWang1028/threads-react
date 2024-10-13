@@ -25,10 +25,6 @@ const userSchema = mongoose.Schema(
       type: String,
       unique: true,
     },
-    googleId: {
-      type: String,
-      unique: true,
-    },
     profilePic: {
       type: String,
       default: "",

@@ -6,14 +6,39 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
 import userAtom from "./atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import CreateThread from "./components/CreateThread";
 import Chatpage from "./pages/Chatpage.jsx";
+import { useEffect } from "react";
 
 function App() {
   const user = useRecoilValue(userAtom);
+  const setUser = useSetRecoilState(userAtom);
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/users/googleProfile", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // To send cookies in the request
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem("user-threads", JSON.stringify(data));
+          setUser(data);
+        }
+      } catch (error) {
+        console.log("Error fetching user: ", error);
+      }
+    };
+
+    fetchUser();
+  }, [setUser]);
 
   return (
     <Box position={"relative"} w={"full"}>

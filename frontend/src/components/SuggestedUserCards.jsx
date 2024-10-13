@@ -139,7 +139,7 @@ export const SuggestedUserCarousel = ({ suggestedUsers }) => {
           },
         }}
       >
-        {suggestedUsers.map((user) => (
+        {suggestedUsers?.map((user) => (
           <SuggestedUserMobile key={user._id} user={user} />
         ))}
       </Flex>
