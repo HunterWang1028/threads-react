@@ -57,7 +57,7 @@ export default function LoginCard() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `http://localhost:5000/api/users/auth/google`;
+    window.location.href = `https://threads-react.onrender.com/api/users/auth/google`;
   };
 
   return (
