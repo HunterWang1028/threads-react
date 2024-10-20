@@ -11,6 +11,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
         "https://threads-react.onrender.com/api/users/auth/google/callback",
+      // callbackURL: "http://localhost:5000/api/users/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

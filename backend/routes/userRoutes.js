@@ -43,6 +43,7 @@ router.get(
     // Generate JWT for Google authenticated user
     generateTokenAndSetCookie(req.user._id, res);
     res.redirect("https://threads-react.onrender.com");
+    // res.redirect("http://localhost:3000");
   }
 );
 router.get("/googleProfile", protectRoute, getGoogleUser);

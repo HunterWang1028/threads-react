@@ -171,9 +171,13 @@ export const updateUser = async (req, res) => {
 
     if (profilePic) {
       if (user.profilePic) {
-        await cloudinary.uploader.destroy(
-          user.profilePic.split("/".pop().split(".")[0])
+        const isClouldinaryPic = user.profilePic.includes(
+          "res.clouldinary.com"
         );
+        if (isClouldinaryPic) {
+          const publicId = user.profilePic.split("/").pop().split(".")[0];
+          await cloudinary.uploader.destroy(publicId);
+        }
       }
       const uploadedResponse = await cloudinary.uploader.upload(profilePic);
       profilePic = uploadedResponse.secure_url;
