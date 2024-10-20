@@ -57,7 +57,7 @@ export default function UpdateProfilePage() {
       showToast("Error", error, "error");
     } finally {
       setIsLoading(false);
-      navigate(`/${user.username}`);
+      navigate(`/${inputs.username}`);
     }
   };
 
