@@ -57,10 +57,6 @@ const Chatpage = () => {
 
   useEffect(() => {
     socket?.on("newMessage", (message) => {
-      if (selectedConversation._id === message.conversationId) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-
       setConversations((prev) => {
         const updatedConversations = prev.map((conversation) => {
           if (conversation._id === message.conversationId) {
@@ -106,7 +102,7 @@ const Chatpage = () => {
         return updatedConversations;
       });
     });
-    return () => socket?.off("messageSeen");
+    return () => socket?.off("messagesSeen");
   }, [socket, setConversations]);
 
   const handleConversationSearch = async (e) => {
