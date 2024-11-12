@@ -225,8 +225,9 @@ export const getFeedThreads = async (req, res) => {
     }
 
     const following = user.following;
+    const authorsToInclude = [...following, userId];
 
-    const feedThreads = await Thread.find({ author: { $in: following } })
+    const feedThreads = await Thread.find({ author: { $in: authorsToInclude } })
       .find({ parentId: { $in: [null, undefined] } })
       .sort({
         createdAt: -1,

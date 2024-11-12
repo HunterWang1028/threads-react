@@ -24,6 +24,7 @@ import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import CommentCard from "./CommentCard";
+import { AiOutlineLink } from "react-icons/ai";
 
 const PostActions = ({ thread: currentThread }) => {
   const user = useRecoilValue(userAtom);
@@ -156,9 +157,17 @@ const PostActions = ({ thread: currentThread }) => {
             <Image src="/share.svg" alt="share" w={6} h={6} />
           </MenuButton>
           <Portal>
-            <MenuList bg={"gray.dark"}>
-              <MenuItem bg={"gray.dark"} onClick={copyUrl}>
+            <MenuList bgColor={useColorModeValue("gray.100", "#101010")}>
+              <MenuItem
+                bgColor={useColorModeValue("gray.100", "#101010")}
+                onClick={copyUrl}
+                _hover={{
+                  bg: useColorModeValue("gray.400", "gray.600"),
+                }}
+                justifyContent={"space-between"}
+              >
                 Copy Link
+                <AiOutlineLink />
               </MenuItem>
             </MenuList>
           </Portal>
@@ -184,7 +193,7 @@ const PostActions = ({ thread: currentThread }) => {
                     <Image src="/verified.png" w={4} h={4} ml={1} />
                   </Flex>
                   <Textarea
-                    placeholder={`Reply to @${currentThread.author.username} `}
+                    placeholder={`Reply to @${currentThread?.author?.username} `}
                     value={reply}
                     _placeholder={{
                       color: useColorModeValue("gray.800", "gray.400"),

@@ -72,7 +72,7 @@ const HomePage = () => {
           <SuggestedUserCarousel suggestedUsers={suggestedUsers} />
         </Flex>
 
-        {threads.map((thread) => (
+        {threads?.map((thread) => (
           <ThreadCard key={thread._id} thread={thread} author={thread.author} />
         ))}
       </Box>

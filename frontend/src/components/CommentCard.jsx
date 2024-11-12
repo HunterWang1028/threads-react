@@ -11,11 +11,11 @@ const CommentCard = ({ thread, author }) => {
       <Flex flexDirection={"column"} alignItems={"center"}>
         <Avatar
           size="md"
-          name={author.name}
-          src={author.profilePic}
+          name={author?.name}
+          src={author?.profilePic}
           onClick={(e) => {
             e.preventDefault();
-            navigate(`/${author.username}`);
+            navigate(`/${author?.username}`);
           }}
         />
 

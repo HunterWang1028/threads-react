@@ -8,17 +8,17 @@ const ReplyCard = ({ thread, author, parent, parentAuthor }) => {
 
   return (
     <>
-      <Link to={`/${parentAuthor.username}/thread/${parent._id}`}>
+      <Link to={`/${parentAuthor?.username}/thread/${parent._id}`}>
         <Flex gap={3} pt={5} mr={3}>
           <Flex flexDirection={"column"} alignItems={"center"}>
             {/* TODO: can add a user info modal with follow button on the profile pic */}
             <Avatar
               size="md"
-              name={parentAuthor.name}
-              src={parentAuthor.profilePic}
+              name={parentAuthor?.name}
+              src={parentAuthor?.profilePic}
               onClick={(e) => {
                 e.preventDefault();
-                navigate(`/${parentAuthor.username}`);
+                navigate(`/${parentAuthor?.username}`);
               }}
             />
 
@@ -32,10 +32,10 @@ const ReplyCard = ({ thread, author, parent, parentAuthor }) => {
                   fontWeight={"bold"}
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/${parentAuthor.username}`);
+                    navigate(`/${parentAuthor?.username}`);
                   }}
                 >
-                  {parentAuthor.name}
+                  {parentAuthor?.name}
                 </Text>
 
                 <Image src="/verified.png" w={4} h={4} ml={1} />
@@ -47,20 +47,20 @@ const ReplyCard = ({ thread, author, parent, parentAuthor }) => {
                   width={36}
                   textAlign={"right"}
                 >
-                  {formatDistanceToNow(new Date(parent.createdAt))}
+                  {formatDistanceToNow(new Date(parent?.createdAt))}
                 </Text>
               </Flex>
             </Flex>
 
-            <Text fontSize={"sm"}>{parent.text}</Text>
-            {parent.img && (
+            <Text fontSize={"sm"}>{parent?.text}</Text>
+            {parent?.img && (
               <Box
                 borderRadius={6}
                 overflow={"hidden"}
                 border={"1px solid"}
                 borderColor={"gray.light"}
               >
-                <Image src={parent.img} w={"full"} />
+                <Image src={parent?.img} w={"full"} />
               </Box>
             )}
 
