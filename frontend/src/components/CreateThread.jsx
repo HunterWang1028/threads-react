@@ -83,9 +83,11 @@ const CreateThread = () => {
         return;
       }
       showToast("Success", "Thread created successfully", "success");
+
       if (username === currentUser.username) {
         setThreads([data, ...threads]);
       }
+
       onClose();
       setThreadText("");
       setImgUrl("");
@@ -125,6 +127,7 @@ const CreateThread = () => {
                     <Image src="/verified.png" w={4} h={4} ml={1} />
                   </Flex>
                   <Textarea
+                    isRequired
                     placeholder="What's new?"
                     _placeholder={{
                       color: useColorModeValue("gray.800", "gray.500"),
