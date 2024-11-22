@@ -48,24 +48,24 @@ const ThreadCard = ({ thread, author, lastThread }) => {
         return;
       }
       showToast("Success", "Post deleted", "success");
-      setThreads(threads.filter((t) => t._id !== threads._id));
+      setThreads(threads.filter((t) => t._id !== thread._id));
     } catch (error) {
       showToast("Error", error.message, "error");
     }
   };
 
   return (
-    <Link to={`/${author.username}/thread/${thread._id}`}>
+    <Link to={`/${author?.username}/thread/${thread._id}`}>
       <Flex gap={3} py={5} mr={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           {/* TODO: can add a user info modal with follow button on the profile pic */}
           <Avatar
             size="md"
-            name={author.name}
-            src={author.profilePic}
+            name={author?.name}
+            src={author?.profilePic}
             onClick={(e) => {
               e.preventDefault();
-              navigate(`/${author.username}`);
+              navigate(`/${author?.username}`);
             }}
           />
           {/* {thread.children.length > 0 && (
@@ -99,7 +99,7 @@ const ThreadCard = ({ thread, author, lastThread }) => {
                   navigate(`/${author.username}`);
                 }}
               >
-                {author.name}
+                {author?.name}
               </Text>
 
               <Image src="/verified.png" w={4} h={4} ml={1} />
@@ -133,7 +133,7 @@ const ThreadCard = ({ thread, author, lastThread }) => {
                         Copy Link
                         <AiOutlineLink />
                       </MenuItem>
-                      {currentUser?._id === thread.author._id && (
+                      {currentUser?._id === thread.author?._id && (
                         <MenuItem
                           //eslint-disable-next-line
                           bgColor={useColorModeValue("gray.100", "#101010")}
