@@ -127,7 +127,6 @@ const CreateThread = () => {
                     <Image src="/verified.png" w={4} h={4} ml={1} />
                   </Flex>
                   <Textarea
-                    isRequired
                     placeholder="What's new?"
                     _placeholder={{
                       color: useColorModeValue("gray.800", "gray.500"),
@@ -188,6 +187,7 @@ const CreateThread = () => {
               size={"md"}
               onClick={handleCreateThread}
               isLoading={isLoading}
+              isDisabled={!threadText}
             >
               Post
             </Button>
